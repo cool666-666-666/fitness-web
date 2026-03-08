@@ -1,0 +1,119 @@
+﻿<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>健身记录网站</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <div class="bg-shape bg-a"></div>
+  <div class="bg-shape bg-b"></div>
+
+  <main class="app shell">
+    <header class="hero panel reveal">
+      <p class="eyebrow">FITNESS DASHBOARD</p>
+      <h1>健身打卡</h1>
+      <p class="sub">记录每次训练，立刻看到数据反馈。</p>
+    </header>
+
+    <nav class="tabs panel reveal delay-1">
+      <button class="tab is-active" data-tab="record">训练记录</button>
+      <button class="tab" data-tab="stats">训练统计</button>
+    </nav>
+
+    <section id="record" class="view reveal delay-2">
+      <div class="panel form-panel">
+        <h2>新增记录</h2>
+        <div class="form-grid">
+          <label>
+            动作名称
+            <input id="actionInput" type="text" placeholder="例如：卧推" maxlength="32" />
+          </label>
+          <label>
+            组数
+            <input id="setsInput" type="number" inputmode="numeric" min="1" max="999" placeholder="例如：4" />
+          </label>
+        </div>
+
+        <div class="chips" id="quickActions"></div>
+
+        <div class="actions">
+          <button id="addBtn" class="btn primary">新增记录</button>
+          <button id="clearBtn" class="btn ghost">清空全部</button>
+        </div>
+      </div>
+
+      <div class="panel summary-panel">
+        <div class="metric">
+          <span id="recordCount">0</span>
+          <small>记录条数</small>
+        </div>
+        <div class="metric">
+          <span id="totalSets">0</span>
+          <small>总组数</small>
+        </div>
+      </div>
+
+      <div class="panel list-panel">
+        <div class="panel-head">
+          <h2>训练列表</h2>
+          <small id="updatedAt">-</small>
+        </div>
+        <ul id="recordList" class="record-list"></ul>
+        <p id="emptyTip" class="empty-tip">暂无记录，先添加一条训练动作。</p>
+      </div>
+    </section>
+
+    <section id="stats" class="view hidden">
+      <div class="panel stats-grid">
+        <article>
+          <h3 id="sTotalRecords">0</h3>
+          <p>总记录数</p>
+        </article>
+        <article>
+          <h3 id="sTotalSets">0</h3>
+          <p>总组数</p>
+        </article>
+        <article>
+          <h3 id="sAvgSets">0.0</h3>
+          <p>平均组数</p>
+        </article>
+      </div>
+
+      <div class="panel rank-panel">
+        <div class="panel-head">
+          <h2>动作组数排行</h2>
+        </div>
+        <ul id="rankList" class="rank-list"></ul>
+        <p id="rankEmpty" class="empty-tip">还没有数据可统计。</p>
+      </div>
+    </section>
+  </main>
+
+  <template id="recordItemTpl">
+    <li class="record-item">
+      <div>
+        <h4></h4>
+        <p></p>
+      </div>
+      <div class="record-right">
+        <strong></strong>
+        <button class="btn danger">删除</button>
+      </div>
+    </li>
+  </template>
+
+  <template id="rankItemTpl">
+    <li class="rank-item">
+      <div class="rank-row">
+        <strong></strong>
+        <span></span>
+      </div>
+      <div class="track"><div class="fill"></div></div>
+    </li>
+  </template>
+
+  <script src="./app.js"></script>
+</body>
+</html>
