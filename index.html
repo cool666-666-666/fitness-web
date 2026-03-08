@@ -34,6 +34,14 @@
             组数
             <input id="setsInput" type="number" inputmode="numeric" min="1" max="999" placeholder="例如：4" />
           </label>
+          <label>
+            每组次数（按顺序）
+            <input id="setRepsInput" type="text" inputmode="numeric" placeholder="例如：12,10,8,8" />
+          </label>
+          <label>
+            每组重量kg（按顺序）
+            <input id="setWeightsInput" type="text" inputmode="decimal" placeholder="例如：60,65,65,70" />
+          </label>
         </div>
 
         <div class="chips" id="quickActions"></div>
@@ -53,6 +61,37 @@
           <span id="totalSets">0</span>
           <small>总组数</small>
         </div>
+        <div class="metric">
+          <span id="totalReps">0</span>
+          <small>总次数</small>
+        </div>
+        <div class="metric">
+          <span id="totalVolume">0</span>
+          <small>总容量(kg)</small>
+        </div>
+      </div>
+
+      <div class="panel filter-panel">
+        <div class="panel-head">
+          <h2>近期动作查询</h2>
+        </div>
+        <div class="filter-grid">
+          <label>
+            动作
+            <select id="queryAction"></select>
+          </label>
+          <label>
+            时间范围
+            <select id="queryRange">
+              <option value="7">近7天</option>
+              <option value="30" selected>近30天</option>
+              <option value="90">近90天</option>
+              <option value="0">全部</option>
+            </select>
+          </label>
+        </div>
+        <ul id="queryList" class="query-list"></ul>
+        <p id="queryEmpty" class="empty-tip">当前条件没有记录。</p>
       </div>
 
       <div class="panel list-panel">
@@ -76,6 +115,14 @@
           <p>总组数</p>
         </article>
         <article>
+          <h3 id="sTotalReps">0</h3>
+          <p>总次数</p>
+        </article>
+        <article>
+          <h3 id="sTotalVolume">0</h3>
+          <p>总容量(kg)</p>
+        </article>
+        <article>
           <h3 id="sAvgSets">0.0</h3>
           <p>平均组数</p>
         </article>
@@ -83,7 +130,7 @@
 
       <div class="panel rank-panel">
         <div class="panel-head">
-          <h2>动作组数排行</h2>
+          <h2>动作容量排行</h2>
         </div>
         <ul id="rankList" class="rank-list"></ul>
         <p id="rankEmpty" class="empty-tip">还没有数据可统计。</p>

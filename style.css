@@ -1,4 +1,4 @@
-:root {
+﻿:root {
   --bg: #f4f8ef;
   --ink: #10261a;
   --muted: #5e7365;
@@ -114,16 +114,22 @@ body {
   display: none;
 }
 
-.form-panel, .list-panel, .rank-panel {
+.form-panel, .list-panel, .rank-panel, .filter-panel {
   padding: 20px;
 }
 
-.form-panel h2, .list-panel h2, .rank-panel h2 {
+.form-panel h2, .list-panel h2, .rank-panel h2, .filter-panel h2 {
   margin: 0 0 12px;
   font-size: 22px;
 }
 
 .form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.filter-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
@@ -136,12 +142,14 @@ label {
   font-size: 14px;
 }
 
-input {
+input,
+select {
   height: 42px;
   border-radius: 12px;
   border: 1px solid var(--line);
   padding: 0 12px;
   font-size: 16px;
+  background: #fff;
 }
 
 .chips {
@@ -195,7 +203,7 @@ input {
 .summary-panel {
   padding: 14px 20px;
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 12px;
 }
 
@@ -226,7 +234,7 @@ input {
   color: var(--muted);
 }
 
-.record-list, .rank-list {
+.record-list, .rank-list, .query-list {
   list-style: none;
   padding: 0;
   margin: 10px 0 0;
@@ -234,25 +242,33 @@ input {
   gap: 10px;
 }
 
-.record-item {
+.record-item,
+.rank-item,
+.query-item {
   border: 1px solid var(--line);
   border-radius: 12px;
   padding: 12px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   background: #fbfef9;
 }
 
-.record-item h4 {
+.record-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.record-item h4,
+.query-item strong {
   margin: 0;
   font-size: 18px;
 }
 
-.record-item p {
+.record-item p,
+.query-item span {
   margin: 6px 0 0;
   color: var(--muted);
   font-size: 13px;
+  display: block;
 }
 
 .record-right {
@@ -268,7 +284,7 @@ input {
 .stats-grid {
   padding: 16px;
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 10px;
 }
 
@@ -287,13 +303,6 @@ input {
 .stats-grid p {
   margin: 6px 0 0;
   color: var(--muted);
-}
-
-.rank-item {
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  padding: 10px 12px;
-  background: #fbfef9;
 }
 
 .rank-row {
@@ -349,8 +358,21 @@ input {
   }
 }
 
+@media (max-width: 960px) {
+  .summary-panel {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 @media (max-width: 760px) {
-  .form-grid, .stats-grid {
+  .form-grid,
+  .stats-grid,
+  .summary-panel,
+  .filter-grid {
     grid-template-columns: 1fr;
   }
 
