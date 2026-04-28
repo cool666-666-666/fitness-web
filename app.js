@@ -18,6 +18,7 @@
     addBtn: document.getElementById("addBtn"),
     recordCount: document.getElementById("recordCount"),
     recordList: document.getElementById("recordList"),
+    emptyTip: document.getElementById("emptyTip"),
     queryAction: document.getElementById("queryAction"),
     queryRange: document.getElementById("queryRange"),
     queryList: document.getElementById("queryList"),
