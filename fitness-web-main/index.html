@@ -1,0 +1,118 @@
+﻿<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>健身记录网站</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <div class="bg-shape bg-a"></div>
+  <div class="bg-shape bg-b"></div>
+
+  <main class="app shell">
+    <header class="hero panel reveal">
+      <p class="eyebrow">FITNESS DASHBOARD</p>
+      <h1>健身打卡</h1>
+      <p class="sub">记录每次训练，立刻看到数据反馈。</p>
+      <div id="dbStatus" style="margin-top: 12px; font-size: 12px; padding: 8px 12px; border-radius: 8px; background: #ffe7cf; color: #e7670f;">
+        ⚠️ 连接中...
+      </div>
+    </header>
+
+    <nav class="tabs panel reveal delay-1">
+      <button class="tab is-active" data-tab="record">训练记录</button>
+      <button class="tab" data-tab="stats">训练统计</button>
+    </nav>
+
+    <section id="record" class="view reveal delay-2">
+      <div class="panel form-panel">
+        <h2>新增记录</h2>
+        <div class="form-grid">
+          <label>
+            动作名称
+            <input id="actionInput" type="text" placeholder="例如：卧推" maxlength="32" />
+          </label>
+          <label>
+            组数
+            <input id="setsInput" type="number" inputmode="numeric" min="1" max="999" placeholder="例如：4" value="3" />
+          </label>
+          <label>
+            每组次数（按顺序）
+            <input id="setRepsInput" type="text" inputmode="numeric" placeholder="例如：12,10,8,8" />
+          </label>
+          <label>
+            每组重量kg（按顺序）
+            <input id="setWeightsInput" type="text" inputmode="decimal" placeholder="例如：60,65,65,70" />
+          </label>
+        </div>
+
+        <div class="actions" style="margin-top: 20px;">
+          <button id="addBtn" class="btn primary">新增记录</button>
+        </div>
+      </div>
+
+      <div class="panel list-panel">
+        <div class="panel-head">
+          <h2>主页记录列表</h2>
+          <small>显示最近录入的动作</small>
+        </div>
+        <ul id="recordList" class="record-list"></ul>
+        <p id="emptyTip" class="empty-tip">暂无记录，先添加一条训练动作。</p>
+      </div>
+    </section>
+
+    <section id="stats" class="view hidden">
+      <div class="panel stats-grid" style="grid-template-columns: 1fr; margin-bottom: 20px;">
+        <article style="text-align: center;">
+          <h3 id="sTotalRecords">0</h3>
+          <p>累计训练动作项</p>
+        </article>
+      </div>
+
+      <div class="panel form-panel">
+        <h2>近期动作查询</h2>
+        <div class="form-grid" style="grid-template-columns: 2fr 1fr auto; gap: 10px; align-items: end;">
+          <label>
+            搜索动作
+            <input id="queryAction" type="text" placeholder="输入动作名称...">
+          </label>
+          <label>
+            时间范围
+            <select id="queryRange">
+              <option value="7">最近 7 天</option>
+              <option value="30" selected>最近 30 天</option>
+              <option value="90">最近 90 天</option>
+              <option value="0">全部记录</option>
+            </select>
+          </label>
+          <button id="queryBtn" class="btn primary">立即查询</button>
+        </div>
+        
+        <ul id="queryList" class="record-list" style="margin-top: 20px;"></ul>
+        <p id="queryEmpty" class="empty-tip hidden">当前条件没有查询到记录。</p>
+      </div>
+    </section>
+  </main>
+
+  <template id="recordItemTpl">
+    <li class="record-item panel">
+      <div style="flex: 1;">
+        <h4 style="margin: 0;"></h4>
+        <small style="color: #888;"></small>
+      </div>
+      <div class="record-right" style="text-align: right;">
+        <strong style="display: block; color: var(--accent-deep);"></strong>
+        <button class="btn danger" style="padding: 4px 8px; font-size: 12px; margin-top: 5px;">删除</button>
+      </div>
+    </li>
+  </template>
+
+  <script>
+    // 部署到 GitHub Pages 时，把下面地址改成你的 Render 后端地址
+    // 例如: https://your-fitness-api.onrender.com/api
+    window.FITNESS_API_BASE_URL = "";
+  </script>
+  <script src="./app.js"></script>
+</body>
+</html>
