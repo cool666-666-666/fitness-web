@@ -1,4 +1,4 @@
-﻿:root {
+:root {
   --bg: #f4f8ef;
   --ink: #10261a;
   --muted: #5e7365;
@@ -127,6 +127,12 @@ body {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
+}
+
+.query-grid {
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: end;
 }
 
 .filter-grid {
@@ -374,6 +380,10 @@ select {
   .summary-panel,
   .filter-grid {
     grid-template-columns: 1fr;
+  }
+
+  .query-grid .btn {
+    width: 100%;
   }
 
   .actions {
