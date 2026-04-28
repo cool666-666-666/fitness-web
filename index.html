@@ -15,6 +15,9 @@
       <p class="eyebrow">FITNESS DASHBOARD</p>
       <h1>健身打卡</h1>
       <p class="sub">记录每次训练，立刻看到数据反馈。</p>
+      <div id="dbStatus" style="margin-top: 12px; font-size: 12px; padding: 8px 12px; border-radius: 8px; background: #ffe7cf; color: #e7670f;">
+        ⚠️ 连接中...
+      </div>
     </header>
 
     <nav class="tabs panel reveal delay-1">
@@ -32,7 +35,7 @@
           </label>
           <label>
             组数
-            <input id="setsInput" type="number" inputmode="numeric" min="1" max="999" placeholder="例如：4" />
+            <input id="setsInput" type="number" inputmode="numeric" min="1" max="999" placeholder="例如：4" value="3" />
           </label>
           <label>
             每组次数（按顺序）
@@ -44,60 +47,15 @@
           </label>
         </div>
 
-        <div class="chips" id="quickActions"></div>
-
-        <div class="actions">
+        <div class="actions" style="margin-top: 20px;">
           <button id="addBtn" class="btn primary">新增记录</button>
-          <button id="clearBtn" class="btn ghost">清空全部</button>
         </div>
-      </div>
-
-      <div class="panel summary-panel">
-        <div class="metric">
-          <span id="recordCount">0</span>
-          <small>记录条数</small>
-        </div>
-        <div class="metric">
-          <span id="totalSets">0</span>
-          <small>总组数</small>
-        </div>
-        <div class="metric">
-          <span id="totalReps">0</span>
-          <small>总次数</small>
-        </div>
-        <div class="metric">
-          <span id="totalVolume">0</span>
-          <small>总容量(kg)</small>
-        </div>
-      </div>
-
-      <div class="panel filter-panel">
-        <div class="panel-head">
-          <h2>近期动作查询</h2>
-        </div>
-        <div class="filter-grid">
-          <label>
-            动作
-            <select id="queryAction"></select>
-          </label>
-          <label>
-            时间范围
-            <select id="queryRange">
-              <option value="7">近7天</option>
-              <option value="30" selected>近30天</option>
-              <option value="90">近90天</option>
-              <option value="0">全部</option>
-            </select>
-          </label>
-        </div>
-        <ul id="queryList" class="query-list"></ul>
-        <p id="queryEmpty" class="empty-tip">当前条件没有记录。</p>
       </div>
 
       <div class="panel list-panel">
         <div class="panel-head">
-          <h2>训练列表</h2>
-          <small id="updatedAt">-</small>
+          <h2>主页记录列表</h2>
+          <small>显示最近录入的动作</small>
         </div>
         <ul id="recordList" class="record-list"></ul>
         <p id="emptyTip" class="empty-tip">暂无记录，先添加一条训练动作。</p>
@@ -105,59 +63,48 @@
     </section>
 
     <section id="stats" class="view hidden">
-      <div class="panel stats-grid">
-        <article>
+      <div class="panel stats-grid" style="grid-template-columns: 1fr; margin-bottom: 20px;">
+        <article style="text-align: center;">
           <h3 id="sTotalRecords">0</h3>
-          <p>总记录数</p>
-        </article>
-        <article>
-          <h3 id="sTotalSets">0</h3>
-          <p>总组数</p>
-        </article>
-        <article>
-          <h3 id="sTotalReps">0</h3>
-          <p>总次数</p>
-        </article>
-        <article>
-          <h3 id="sTotalVolume">0</h3>
-          <p>总容量(kg)</p>
-        </article>
-        <article>
-          <h3 id="sAvgSets">0.0</h3>
-          <p>平均组数</p>
+          <p>累计训练动作项</p>
         </article>
       </div>
 
-      <div class="panel rank-panel">
-        <div class="panel-head">
-          <h2>动作容量排行</h2>
+      <div class="panel form-panel">
+        <h2>近期动作查询</h2>
+        <div class="form-grid" style="grid-template-columns: 2fr 1fr auto; gap: 10px; align-items: end;">
+          <label>
+            搜索动作
+            <input id="queryAction" type="text" placeholder="输入动作名称...">
+          </label>
+          <label>
+            时间范围
+            <select id="queryRange">
+              <option value="7">最近 7 天</option>
+              <option value="30" selected>最近 30 天</option>
+              <option value="90">最近 90 天</option>
+              <option value="0">全部记录</option>
+            </select>
+          </label>
+          <button id="queryBtn" class="btn primary">立即查询</button>
         </div>
-        <ul id="rankList" class="rank-list"></ul>
-        <p id="rankEmpty" class="empty-tip">还没有数据可统计。</p>
+        
+        <ul id="queryList" class="record-list" style="margin-top: 20px;"></ul>
+        <p id="queryEmpty" class="empty-tip hidden">当前条件没有查询到记录。</p>
       </div>
     </section>
   </main>
 
   <template id="recordItemTpl">
-    <li class="record-item">
-      <div>
-        <h4></h4>
-        <p></p>
+    <li class="record-item panel">
+      <div style="flex: 1;">
+        <h4 style="margin: 0;"></h4>
+        <small style="color: #888;"></small>
       </div>
-      <div class="record-right">
-        <strong></strong>
-        <button class="btn danger">删除</button>
+      <div class="record-right" style="text-align: right;">
+        <strong style="display: block; color: var(--accent-deep);"></strong>
+        <button class="btn danger" style="padding: 4px 8px; font-size: 12px; margin-top: 5px;">删除</button>
       </div>
-    </li>
-  </template>
-
-  <template id="rankItemTpl">
-    <li class="rank-item">
-      <div class="rank-row">
-        <strong></strong>
-        <span></span>
-      </div>
-      <div class="track"><div class="fill"></div></div>
     </li>
   </template>
 
