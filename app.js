@@ -1,4 +1,4 @@
-﻿(() => {
+(() => {
   const STORAGE_KEY = "fitness_records_web_v1";
   const isGithubPages = window.location.hostname.endsWith("github.io");
   const configuredApiBase = (window.FITNESS_API_BASE_URL || "").trim();
@@ -93,6 +93,10 @@
       node.querySelector(".danger").onclick = () => removeRecord(item.id);
       el.recordList.appendChild(node);
     });
+
+    if (el.emptyTip) {
+      el.emptyTip.classList.toggle("hidden", records.length > 0);
+    }
 
     if (el.sTotalRecords) el.sTotalRecords.textContent = records.length;
     if (el.recordCount) el.recordCount.textContent = records.length;
