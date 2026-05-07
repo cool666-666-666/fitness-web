@@ -38,6 +38,34 @@
     return list.every(validator) ? list : null;
   };
 
+  const normalizeList = (item, camelKey, snakeKey) => {
+    if (Array.isArray(item[camelKey])) return item[camelKey];
+    if (Array.isArray(item[snakeKey])) return item[snakeKey];
+    if (typeof item[snakeKey] === "string") {
+      try {
+        const parsed = JSON.parse(item[snakeKey]);
+        return Array.isArray(parsed) ? parsed : [];
+      } catch (e) {
+        return [];
+      }
+    }
+    return [];
+  };
+
+  const formatWeights = weightsList => {
+    if (!weightsList.length) return "未记录";
+    return weightsList.map(weight => `${weight}kg`).join("/");
+  };
+
+  const getRecordSummary = item => {
+    const repsList = normalizeList(item, "repsList", "reps_list");
+    const weightsList = normalizeList(item, "weightsList", "weights_list");
+    return {
+      repsText: repsList.length ? repsList.join("/") : "未记录",
+      weightsText: formatWeights(weightsList)
+    };
+  };
+
   // --- API 调用 ---
   async function apiCall(method, endpoint, data = null) {
     try {
@@ -88,8 +116,8 @@
       const time = new Date(item.createdAt || item.created_at).toLocaleString();
       node.querySelector("small").textContent = time;
       
-      const rList = item.repsList || (typeof item.reps_list === 'string' ? JSON.parse(item.reps_list) : item.reps_list) || [];
-      node.querySelector("strong").textContent = `${item.sets} 组 · 每组: ${rList.join('/')} 次`;
+      const summary = getRecordSummary(item);
+      node.querySelector("strong").textContent = `${item.sets} 组 · 次数: ${summary.repsText} · 重量: ${summary.weightsText}`;
       
       node.querySelector(".danger").onclick = () => removeRecord(item.id);
       el.recordList.appendChild(node);
@@ -126,37 +154,39 @@
     el.queryEmpty.classList.add("hidden");
 
     data.forEach(item => {
-      const rList = (() => {
-        if (Array.isArray(item.repsList)) return item.repsList;
-        if (Array.isArray(item.reps_list)) return item.reps_list;
-        if (typeof item.reps_list === "string") {
-          try {
-            const parsed = JSON.parse(item.reps_list);
-            return Array.isArray(parsed) ? parsed : [];
-          } catch (e) {
-            return [];
-          }
-        }
-        return [];
-      })();
-      
+      const summary = getRecordSummary(item);
       const li = document.createElement("li");
       li.className = "record-item panel";
       li.style.marginBottom = "10px";
       li.style.display = "flex";
       li.style.justifyContent = "space-between";
       li.style.alignItems = "center";
-      
-      li.innerHTML = `
-        <div>
-          <h4 style="margin:0">${item.action}</h4>
-          <small style="color:#888">${new Date(item.created_at || item.createdAt).toLocaleString()}</small>
-        </div>
-        <div style="text-align:right">
-          <strong style="color:var(--accent-deep)">${item.sets} 组</strong>
-          <div style="font-size:12px; color:#666">次数: ${rList.join('/')}</div>
-        </div>
-      `;
+
+      const left = document.createElement("div");
+      const title = document.createElement("h4");
+      title.style.margin = "0";
+      title.textContent = item.action;
+      const time = document.createElement("small");
+      time.style.color = "#888";
+      time.textContent = new Date(item.created_at || item.createdAt).toLocaleString();
+      left.append(title, time);
+
+      const right = document.createElement("div");
+      right.style.textAlign = "right";
+      const sets = document.createElement("strong");
+      sets.style.color = "var(--accent-deep)";
+      sets.textContent = `${item.sets} 组`;
+      const reps = document.createElement("div");
+      reps.style.fontSize = "12px";
+      reps.style.color = "#666";
+      reps.textContent = `次数: ${summary.repsText}`;
+      const weights = document.createElement("div");
+      weights.style.fontSize = "12px";
+      weights.style.color = "#666";
+      weights.textContent = `重量: ${summary.weightsText}`;
+      right.append(sets, reps, weights);
+
+      li.append(left, right);
       el.queryList.appendChild(li);
     });
   }
