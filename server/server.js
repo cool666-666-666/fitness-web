@@ -1,4 +1,5 @@
 require('dotenv').config();
+const path = require('path');
 const express = require('express');
 const cors = require('cors');
 const pool = require('./db');
@@ -13,6 +14,7 @@ app.use(cors({
   allowedHeaders: ['Content-Type']
 }));
 app.use(express.json());
+app.use(express.static(path.join(__dirname, '..')));
 
 // ========================
 // 训练记录 API

@@ -2,7 +2,7 @@
   const STORAGE_KEY = "fitness_records_web_v1";
   const isGithubPages = window.location.hostname.endsWith("github.io");
   const configuredApiBase = (window.FITNESS_API_BASE_URL || "").trim();
-  const API_BASE_URL = configuredApiBase || `${window.location.protocol}//${window.location.hostname}:3000/api`;
+  const API_BASE_URL = configuredApiBase || (window.location.hostname === 'localhost' ? '/api' : `${window.location.protocol}//${window.location.hostname}:3000/api`);
   
   let dbConnected = false;
   let records = []; 
