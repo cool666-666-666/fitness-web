@@ -18,60 +18,6 @@ app.use(express.json());
 // 训练记录 API
 // ========================
 
-// 获取所有训练记录
-app.get('/api/records', async (req, res) => {
-  try {
-    const { days = 30, action = '' } = req.query;
-    
-    let query = 'SELECT * FROM fitness_records WHERE 1=1';
-    const params = [];
-    
-    if (days && days !== '0') {
-      query += ' AND created_at >= DATE_SUB(NOW(), INTERVAL ? DAY)';
-      params.push(parseInt(days));
-    }
-    
-    if (action) {
-      query += ' AND action LIKE ?';
-      params.push(`%${action}%`);
-    }
-    
-    query += ' ORDER BY created_at DESC LIMIT 1000';
-    
-    const connection = await pool.getConnection();
-    const [records] = await connection.execute(query, params);
-    connection.release();
-    
-    // 处理 JSON 字段
-    const processedRecords = records.map(record => ({
-      ...record,
-      repsList: Array.isArray(record.reps_list)
-        ? record.reps_list
-        : (() => {
-            try {
-              return record.reps_list ? JSON.parse(record.reps_list) : [];
-            } catch (e) {
-              return [];
-            }
-          })(),
-      weightsList: Array.isArray(record.weights_list)
-        ? record.weights_list
-        : (() => {
-            try {
-              return record.weights_list ? JSON.parse(record.weights_list) : [];
-            } catch (e) {
-              return [];
-            }
-          })()
-    }));
-    
-    res.json(processedRecords);
-  } catch (err) {
-    console.error('获取记录错误:', err);
-    res.status(500).json({ error: '获取记录失败' });
-  }
-});
-
 // 获取所有动作列表
 app.get('/api/actions', async (req, res) => {
   try {
@@ -183,12 +129,14 @@ app.delete('/api/records', async (req, res) => {
 // 获取所有训练记录
 app.get('/api/records', async (req, res) => {
   try {
-    const { days = 30, action = '' } = req.query;
-    
+    const { days = 30, action = '', latest_only } = req.query;
+
     let query = 'SELECT * FROM fitness_records WHERE 1=1';
     const params = [];
-    
-    if (days && days !== '0') {
+
+    if (latest_only === 'true') {
+      query += ' AND DATE(created_at) = (SELECT DATE(MAX(created_at)) FROM fitness_records)';
+    } else if (days && days !== '0') {
       query += ' AND created_at >= DATE_SUB(NOW(), INTERVAL ? DAY)';
       params.push(parseInt(days));
     }

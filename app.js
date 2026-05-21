@@ -66,6 +66,17 @@
     };
   };
 
+  // 获取最近一次训练日期的记录
+  const getLatestDateRecords = (recs) => {
+    if (!recs.length) return [];
+    const dates = recs.map(r => {
+      const d = new Date(r.createdAt);
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    });
+    const latestDate = dates.sort().reverse()[0];
+    return recs.filter((r, i) => dates[i] === latestDate);
+  };
+
   // --- API 调用 ---
   async function apiCall(method, endpoint, data = null) {
     try {
@@ -105,9 +116,10 @@
   function renderAll() {
     if (!el.recordList) return;
     el.recordList.innerHTML = "";
-    
-    // 排序：最新的在上面
-    const sorted = [...records].sort((a, b) => b.createdAt - a.createdAt);
+
+    // 只显示最近一次训练日期的记录
+    const latestRecords = getLatestDateRecords(records);
+    const sorted = [...latestRecords].sort((a, b) => b.createdAt - a.createdAt);
     
     sorted.forEach(item => {
       const node = el.recordItemTpl.content.firstElementChild.cloneNode(true);
@@ -124,11 +136,11 @@
     });
 
     if (el.emptyTip) {
-      el.emptyTip.classList.toggle("hidden", records.length > 0);
+      el.emptyTip.classList.toggle("hidden", sorted.length > 0);
     }
 
-    if (el.sTotalRecords) el.sTotalRecords.textContent = records.length;
-    if (el.recordCount) el.recordCount.textContent = records.length;
+    if (el.sTotalRecords) el.sTotalRecords.textContent = sorted.length;
+    if (el.recordCount) el.recordCount.textContent = sorted.length;
   }
 
   // 2. 渲染查询结果（修复点击没反应的关键）
@@ -208,11 +220,16 @@
     if (dbConnected) {
       const res = await apiCall("POST", "/records", record);
       if (res) record.id = res.id;
+      // 重新从服务端获取最近训练日数据，确保主页只显示最新训练日
+      const data = await apiCall("GET", "/records?latest_only=true");
+      records = data ? data.map(r => ({
+        ...r,
+        createdAt: new Date(r.created_at).getTime()
+      })) : [];
     } else {
       record.id = Date.now().toString();
+      records.unshift(record);
     }
-
-    records.unshift(record);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(records.slice(0, 100)));
     renderAll();
     
@@ -250,7 +267,7 @@
     await initDatabase();
     
     if (dbConnected) {
-      const data = await apiCall("GET", "/records?days=0");
+      const data = await apiCall("GET", "/records?latest_only=true");
       records = data ? data.map(r => ({
         ...r,
         createdAt: new Date(r.created_at).getTime()
