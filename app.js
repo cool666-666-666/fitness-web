@@ -23,7 +23,7 @@
     queryRange: document.getElementById("queryRange"),
     queryList: document.getElementById("queryList"),
     queryEmpty: document.getElementById("queryEmpty"),
-    sTotalRecords: document.getElementById("sTotalRecords"),
+    sTotalRecords: null,
     recordItemTpl: document.getElementById("recordItemTpl")
   };
 
