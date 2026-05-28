@@ -60,3 +60,7 @@ The app is online-first: if the backend is reachable, all reads/writes go throug
 - Record insertion requires `action` and `sets` at minimum. `repsList` and `weightsList` are JSON arrays stored as `reps_list`/`weights_list`.
 - The `latest_only=true` query parameter filters to records whose `DATE(created_at)` equals the maximum date in the table — it shows only the most recent training day, not just the most recent N records.
 - No authentication/authorization is implemented. CORS is wide open (`*`). This is a development-stage app per the README.
+
+## Auto git commit
+
+After every code change, automatically stage and commit the modified files with a descriptive commit message, then push to remote. No need to ask for confirmation.
