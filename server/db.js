@@ -14,10 +14,16 @@ const poolConfig = {
   queueLimit: 0
 };
 
-// TiDB / 云数据库需要 TLS 加密连接
-if (process.env.DB_CA_CERT) {
-  const caPath = path.resolve(__dirname, process.env.DB_CA_CERT);
-  poolConfig.ssl = { ca: fs.readFileSync(caPath) };
+// 非本地数据库自动启用 TLS（TiDB 等云数据库强制要求加密连接）
+const isLocalDb = poolConfig.host === 'localhost' || poolConfig.host === '127.0.0.1';
+if (!isLocalDb) {
+  const caPath = path.resolve(__dirname, 'isrgrootx1.pem');
+  if (fs.existsSync(caPath)) {
+    poolConfig.ssl = { ca: fs.readFileSync(caPath) };
+    console.log('✅ 已启用 TLS 加密连接');
+  } else {
+    console.warn('⚠️ 未找到 TLS 证书文件，尝试不加密连接（云数据库通常会拒绝）');
+  }
 }
 
 const pool = mysql.createPool(poolConfig);
