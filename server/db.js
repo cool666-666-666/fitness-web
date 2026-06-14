@@ -1,16 +1,26 @@
 require('dotenv').config();
 const mysql = require('mysql2/promise');
+const fs = require('fs');
+const path = require('path');
 
-const pool = mysql.createPool({
+const poolConfig = {
   host: process.env.DB_HOST || 'localhost',
-  port: process.env.DB_PORT || 3306,
+  port: Number(process.env.DB_PORT) || 3306,
   user: process.env.DB_USER || 'root',
   password: process.env.DB_PASSWORD || 'password',
   database: process.env.DB_NAME || 'fitness_record',
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0
-});
+};
+
+// TiDB / 云数据库需要 TLS 加密连接
+if (process.env.DB_CA_CERT) {
+  const caPath = path.resolve(__dirname, process.env.DB_CA_CERT);
+  poolConfig.ssl = { ca: fs.readFileSync(caPath) };
+}
+
+const pool = mysql.createPool(poolConfig);
 
 // 初始化数据库表
 async function initDatabase() {
